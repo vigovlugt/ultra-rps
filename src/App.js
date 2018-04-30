@@ -11,7 +11,7 @@ class App extends Component {
   }
 
   componentDidMount(){
-     const socket = socketIOClient("http://localhost:3001")
+     const socket = socketIOClient()
      this.setState({socket:socket});
      socket.emit("choice",0)
      socket.on("lobbys",(lobbys)=>{

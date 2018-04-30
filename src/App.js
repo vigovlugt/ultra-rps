@@ -7,7 +7,7 @@ import { clearInterval } from 'timers';
 class App extends Component {
   constructor(props){
     super(props);
-    this.state = {socket:null,lobbys:[],game:{stage:0,gameStart:Date.now(),timeSinceStart:0}}
+    this.state = {socket:null,lobbys:[],game:null,stats:{kd:0}}
   }
 
   componentDidMount(){
@@ -15,7 +15,17 @@ class App extends Component {
      this.setState({socket:socket});
      socket.emit("choice",0)
      socket.on("lobbys",(lobbys)=>{
-       this.setState({"lobbys":lobbys})
+       this.setState({lobbys})
+     })
+     socket.on("game",(game)=>{
+       this.setState({game});
+       if(game.stage === 1){
+        setInterval(()=>{
+          this.setState({game:null});
+          window.location.href = window.location.href;
+        },5000)
+       }
+       
      })
     //  let progressInterval = setInterval(()=>{
     //    let game = this.state.game;
@@ -24,7 +34,7 @@ class App extends Component {
     //    //this.forceUpdate()
     //    console.log(this.state.game.timeSinceStart);
     //    if(this.state.game.timeSinceStart >= 15){
-        //  clearInterval(progressInterval);
+    //    clearInterval(progressInterval);
     //    }
     //  },1/60 * 1000)
   }
@@ -43,7 +53,7 @@ class App extends Component {
               <div className="card-body">
                 {this.state.game == null ?
                   (//SHOW STATS
-                    null
+                    <p>stats</p>
                   )
                   : this.state.game.stage === 0 ?
                   (//GAME
@@ -68,7 +78,7 @@ class App extends Component {
                   )
                   :
                   (//SHOW GAME END
-                    null
+                    <p>Winner: {this.state.game.winner} {this.state.game.winner == this.state.socket.id ? "You won!" : "You lost :("}</p>
                   )
                 }
               </div>
@@ -86,9 +96,9 @@ class App extends Component {
                       <span style={{fontSize:"20px"}}>  
                         {lobby.owner} 
                       </span>
-                      {this.state.socket.id == lobby.owner ? null :
+                      {this.state.socket.id === lobby.owner ? null :
                         (
-                        <button className="btn btn-primary" style={{width:"60px",float:"right",padding:"3px 12px"}}>
+                        <button onClick={()=>{this.joinLobby(lobby.owner)}} className="btn btn-primary" style={{width:"60px",float:"right",padding:"3px 12px"}}>
                           Join
                         </button>
                         )
@@ -106,6 +116,10 @@ class App extends Component {
 
   createLobby(){
     this.state.socket.emit("createLobby",{})
+  }
+
+  joinLobby(id){
+    this.state.socket.emit("joinLobby",{lobbyOwner:id})
   }
 
   chooseItem(item){

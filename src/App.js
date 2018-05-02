@@ -11,7 +11,7 @@ class App extends Component {
   }
 
   componentDidMount(){
-     const socket = socketIOClient()
+     const socket = socketIOClient("ultrarps.herokuapp.com");
      this.setState({socket:socket});
      socket.emit("choice",0)
      socket.on("lobbys",(lobbys)=>{
@@ -25,11 +25,11 @@ class App extends Component {
           window.location.href = window.location.href;
         },5000)
        }
-       
+
      })
     //  let progressInterval = setInterval(()=>{
     //    let game = this.state.game;
-    //    game.timeSinceStart = ((Date.now() - game.gameStart) + 15) / 1000; 
+    //    game.timeSinceStart = ((Date.now() - game.gameStart) + 15) / 1000;
     //    this.setState(game);
     //    //this.forceUpdate()
     //    console.log(this.state.game.timeSinceStart);
@@ -93,8 +93,8 @@ class App extends Component {
                   {this.state.lobbys.map((lobby,index)=>{
                     return (
                     <li className="list-group-item" key={index}>
-                      <span style={{fontSize:"20px"}}>  
-                        {lobby.owner} 
+                      <span style={{fontSize:"20px"}}>
+                        {lobby.owner}
                       </span>
                       {this.state.socket.id === lobby.owner ? null :
                         (

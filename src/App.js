@@ -22,7 +22,6 @@ class App extends Component {
        if(game.stage === 1){
         setInterval(()=>{
           this.setState({game:null});
-          window.location.href = window.location.href;
         },5000)
        }
 
@@ -63,10 +62,19 @@ class App extends Component {
                         ["Rock","Paper","Scissors"].map((item,index)=>{
                           return (
                             <div className="col-4" key={index}>
-                              <button className="btn" onClick={()=>{this.chooseItem(index)}} style={{width:"100%",height:"232px"}}>{item}</button>
+                              <button className="btn" onClick={()=>{this.chooseItem(index)}} style={{width:"100%",height:"232px"}}>
+                              {
+                                item === "Rock" ?
+                                (<i className="far fa-hand-rock fa-7x"></i>) :
+                                item === "Paper" ?
+                                (<i className="far fa-hand-paper fa-7x"></i>) :
+                                (<i className="far fa-hand-scissors fa-7x"></i>)
+                              }
+                              </button>
                             </div>
-                          )
-                        })
+                            )
+                          }
+                        )
                       }
                       </div>
                       <div className="row" style={{marginTop:"20px",marginLeft:"0px",marginRight:"0px"}}>
